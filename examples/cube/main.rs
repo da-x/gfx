@@ -16,6 +16,7 @@ extern crate cgmath;
 #[macro_use]
 extern crate gfx;
 extern crate gfx_app;
+extern crate draw_state;
 
 pub use gfx_app::{ColorFormat, DepthFormat};
 use gfx::{Bundle, texture};
@@ -139,11 +140,20 @@ impl<R: gfx::Resources> gfx_app::Application<R> for App<R> {
             texture::FilterMethod::Bilinear,
             texture::WrapMode::Clamp);
 
-        let pso = factory.create_pipeline_simple(
+        use gfx::{state, Primitive};
+        use draw_state::state::{MultiSample};
+
+        let set = factory.create_shader_set(
             vs.select(backend).unwrap(),
-            ps.select(backend).unwrap(),
-            pipe::new()
+            ps.select(backend).unwrap()
         ).unwrap();
+        let pso = factory.create_pipeline_state(
+            &set,
+            Primitive::TriangleList, state::Rasterizer {
+                samples : Some(MultiSample {}),
+                ..state::Rasterizer::new_fill()
+            },
+            pipe::new()).unwrap();
 
         let proj = cgmath::perspective(cgmath::deg(45.0f32), window_targets.aspect_ratio, 1.0, 10.0);
 

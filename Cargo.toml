@@ -141,6 +141,7 @@ genmesh = "0.4"
 noise = "0.1"
 image = "0.6"
 winit = "0.5"
+draw_state = "0.6"
 
 [target.x86_64-unknown-linux-gnu.dev_dependencies]
 glfw = "0.12"
